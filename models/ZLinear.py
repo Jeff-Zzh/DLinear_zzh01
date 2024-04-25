@@ -86,7 +86,7 @@ class Model(nn.Module):
             self.Linear_Seasonal.weight = nn.Parameter((1/self.seq_len)*torch.ones([self.pred_len,self.seq_len]))
             self.Linear_Trend.weight = nn.Parameter((1/self.seq_len)*torch.ones([self.pred_len,self.seq_len]))
         # Additional layers
-        self.dropout = nn.Dropout(0.1)
+        self.dropout = nn.Dropout(0.1) # probability of an element to be zeroed. Default: 0.ii
         self.relu = nn.ReLU()
 
     def forward(self, x):
