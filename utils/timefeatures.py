@@ -7,6 +7,9 @@ from pandas.tseries.frequencies import to_offset
 
 
 class TimeFeature:
+    '''
+    时间特征编码类，有很多子类，如Second of minute encoded as value between [-0.5, 0.5]
+    '''
     def __init__(self):
         pass
 
@@ -82,11 +85,13 @@ def time_features_from_frequency_str(freq_str: str) -> List[TimeFeature]:
     """
     Returns a list of time features that will be appropriate for the given frequency string.
     Parameters
+    根据给定的时间频率字符串生成一组时间特征。这些时间特征用于表示给定频率的时间序列数据。
     ----------
     freq_str
         Frequency string of the form [multiple][granularity] such as "12H", "5min", "1D" etc.
     """
 
+    # 将不同的时间偏移与相应的时间特征关联起来
     features_by_offsets = {
         offsets.YearEnd: [],
         offsets.QuarterEnd: [MonthOfYear],
@@ -112,11 +117,12 @@ def time_features_from_frequency_str(freq_str: str) -> List[TimeFeature]:
         ],
     }
 
-    offset = to_offset(freq_str)
+    # 确定适用于该频率的时间偏移 to_offset('h') -> <Hour>
+    offset = to_offset(freq_str) # 是哪一种offset_type: YearEnd/QuarterEnd/MonthEnd/Week/Day/BusinessDay/Hour/Minute/Second
 
-    for offset_type, feature_classes in features_by_offsets.items():
+    for offset_type, feature_classes in features_by_offsets.items():# <Hour>: [HourOfDay, DayOfWeek, DayOfMonth, DayOfYear], 4个维度的时间特征
         if isinstance(offset, offset_type):
-            return [cls() for cls in feature_classes]
+            return [cls() for cls in feature_classes] # 返回时间特征类的列表，这些特征将用于表示给定频率的时间序列数据。如HourOfDay, DayOfWeek, DayOfMonth, DayOfYear的实例的list
 
     supported_freq_msg = f"""
     Unsupported frequency {freq_str}
@@ -136,4 +142,10 @@ def time_features_from_frequency_str(freq_str: str) -> List[TimeFeature]:
 
 
 def time_features(dates, freq='h'):
-    return np.vstack([feat(dates) for feat in time_features_from_frequency_str(freq)])
+    '''
+
+    :param dates:日期时间序列  pandas.DatetimeIndex类对象 pd.to_datetime(df_stamp['date'].values
+    :param freq:时间频率字符串 freq for time features encoding， default是’h‘
+    :return:
+    '''
+    return np.vstack([feat(dates) for feat in time_features_from_frequency_str(freq)]) # 堆叠时间特征

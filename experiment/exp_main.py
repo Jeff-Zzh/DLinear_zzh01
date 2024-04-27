@@ -72,7 +72,7 @@ class Exp_Main(Exp_Basic):
                 # encoder - decoder
                 if self.args.use_amp:
                     with torch.cuda.amp.autocast():
-                        if 'DLinear' in self.args.model:
+                        if 'DLinear' or 'ZLinear' in self.args.model:
                             outputs = self.model(batch_x)
                         else:
                             if self.args.output_attention:
@@ -80,7 +80,7 @@ class Exp_Main(Exp_Basic):
                             else:
                                 outputs = self.model(batch_x, batch_x_mark, dec_inp, batch_y_mark)
                 else:
-                    if 'DLinear' in self.args.model:
+                    if 'DLinear' or 'ZLinear' in self.args.model:
                         outputs = self.model(batch_x)
                     else:
                         if self.args.output_attention:
@@ -110,7 +110,7 @@ class Exp_Main(Exp_Basic):
         vali_data, vali_loader = self._get_data(flag='val')
         test_data, test_loader = self._get_data(flag='test')
 
-        # 创建模型参数存储路径dir
+        # 创建模型参数存储路径dir ./checkpoints
         path = os.path.join(self.args.checkpoints, setting) # 存模型参数的path默认为./checkpoints/ + 命令行参数字符串
         if not os.path.exists(path):
             os.makedirs(path)
@@ -134,7 +134,7 @@ class Exp_Main(Exp_Basic):
             self.model.train() # 将模型设置为训练模式，每个训练迭代（batch）开始时调用，以准备计算新的梯度
             epoch_time = time.time()
             for i, (batch_x, batch_y, batch_x_mark, batch_y_mark) in enumerate(train_loader): # k:v
-                iter_count += 1
+                iter_count += 1 # TODO 继续看懂代码
                 model_optim.zero_grad() # 将优化器管理的模型参数的梯度归零
                 batch_x = batch_x.float().to(self.device) # 输入数据 batch_x 转换为浮点类型，并将其移动到指定的设备上（CPU）
 
@@ -151,10 +151,10 @@ class Exp_Main(Exp_Basic):
                 # encoder - decoder
                 if self.args.use_amp: # GPU
                     with torch.cuda.amp.autocast():
-                        if 'DLinear' in self.args.model:
+                        if 'DLinear' or 'ZLinear' in self.args.model:
                             outputs = self.model(batch_x)
                         else:
-                            if self.args.output_attention:
+                            if self.args.output_attention: # whether to output attention in ecoder 是否在编码器中输出注意力信息
                                 outputs = self.model(batch_x, batch_x_mark, dec_inp, batch_y_mark)[0]
                             else:
                                 outputs = self.model(batch_x, batch_x_mark, dec_inp, batch_y_mark)
@@ -165,12 +165,11 @@ class Exp_Main(Exp_Basic):
                         loss = criterion(outputs, batch_y)
                         train_loss.append(loss.item())
                 else: # 无GPU，用CPU训练
-                    if 'DLinear' in self.args.model:
+                    if 'DLinear' or 'ZLinear' in self.args.model:
                             outputs = self.model(batch_x) # 使用模型进行前向传播，获取预测结果
                     else: # 非DLinear，其他模型时
-                        if self.args.output_attention: # 正常不选
+                        if self.args.output_attention: # transformer 特有 whether to output attention in ecoder
                             outputs = self.model(batch_x, batch_x_mark, dec_inp, batch_y_mark)[0]
-
                         else:
                             outputs = self.model(batch_x, batch_x_mark, dec_inp, batch_y_mark, batch_y)
                     # print(outputs.shape,batch_y.shape)
@@ -255,7 +254,7 @@ class Exp_Main(Exp_Basic):
                 # encoder - decoder
                 if self.args.use_amp:
                     with torch.cuda.amp.autocast():
-                        if 'DLinear' in self.args.model:
+                        if 'DLinear' or 'ZLinear' in self.args.model:
                             outputs = self.model(batch_x)
                         else:
                             if self.args.output_attention:
@@ -263,7 +262,7 @@ class Exp_Main(Exp_Basic):
                             else:
                                 outputs = self.model(batch_x, batch_x_mark, dec_inp, batch_y_mark)
                 else:
-                    if 'DLinear' in self.args.model:
+                    if 'DLinear' or 'ZLinear' in self.args.model:
                             outputs = self.model(batch_x)
                     else:
                         if self.args.output_attention:
@@ -349,7 +348,7 @@ class Exp_Main(Exp_Basic):
                 # encoder - decoder
                 if self.args.use_amp:
                     with torch.cuda.amp.autocast():
-                        if 'DLinear' in self.args.model:
+                        if 'DLinear' or 'ZLinear' in self.args.model:
                             outputs = self.model(batch_x)
                         else:
                             if self.args.output_attention:
@@ -357,7 +356,7 @@ class Exp_Main(Exp_Basic):
                             else:
                                 outputs = self.model(batch_x, batch_x_mark, dec_inp, batch_y_mark)
                 else:
-                    if 'DLinear' in self.args.model:
+                    if 'DLinear' or 'ZLinear' in self.args.model:
                         outputs = self.model(batch_x)
                     else:
                         if self.args.output_attention:
