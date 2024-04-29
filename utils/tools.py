@@ -47,7 +47,7 @@ class EarlyStopping:
         self.patience = patience # 验证集损失不再改善时，需要等待多少个 epoch 后停止训练
         self.verbose = verbose # 表示是否输出详细信息
         self.counter = 0 # 用于计数连续 epoch 中验证集损失不再改善的次数
-        self.delta = delta  # 表示验证集损失的最小改善量，即当损失减少的量小于 delta 时，将计数器增加
+        self.delta = delta  # 表示验证集损失相比上次验证集损失的最小改善量，即当验证集损失相比上次验证集损失减少的量小于 delta 时，将计数器增加，default delta=0
         self.best_score = None # 记录最好的验证集损失
         self.early_stop = False # 是否触发了早停
         self.val_loss_min = np.Inf # 记录最小的验证集损失
@@ -65,10 +65,10 @@ class EarlyStopping:
         :return:
         '''
         score = -val_loss
-        if self.best_score is None:
+        if self.best_score is None: # 第一次
             self.best_score = score
             self.save_checkpoint(val_loss, model, path)
-        elif score < self.best_score + self.delta:
+        elif score < self.best_score + self.delta: # 连续patience次，验证集模型损失都小于这个数值后，模型就没有必要再训练了
             self.counter += 1
             print(f'EarlyStopping counter: {self.counter} out of {self.patience}')
             if self.counter >= self.patience:
@@ -86,7 +86,7 @@ class EarlyStopping:
         :param path:保存路径
         :return:
         '''
-        if self.verbose: # 展示详细信息
+        if self.verbose: # 展示详细信息，验证集损失减小了
             print(f'Validation Set loss decreased ({self.val_loss_min:.6f} --> {val_loss:.6f}). \
              Saving model checkpoint.pth...')
         torch.save(model.state_dict(), path + '/' + 'checkpoint.pth') # 保存模型状态字典
@@ -135,7 +135,7 @@ def visual(true, preds=None, name='./pic/test.pdf'):
     Results visualization
     :param true:真实的数据序列
     :param preds: 预测的数据序列
-    :param name: 图片保存名称
+    :param name: 图片保存名称, 这里指定了一个默认路径，但是我们一般会传入要真实存放的路径
     :return:
     '''
     plt.figure()

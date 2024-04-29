@@ -146,6 +146,9 @@ class Dataset_Custom(Dataset):
 
 
 class Dataset_Pred(Dataset):
+    '''
+    专用于数据预测的数据集
+    '''
     def __init__(self, root_path, flag='pred', size=None,
                  features='S', data_path='ETTh1.csv',
                  target='OT', scale=True, inverse=False, timeenc=0, freq='15min', cols=None):

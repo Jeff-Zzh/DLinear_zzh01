@@ -84,6 +84,9 @@ class Model(nn.Module):
             self.Linear_Decoder = nn.Linear(self.seq_len,self.pred_len)
             self.Linear_Seasonal.weight = nn.Parameter((1/self.seq_len)*torch.ones([self.pred_len,self.seq_len]))
             self.Linear_Trend.weight = nn.Parameter((1/self.seq_len)*torch.ones([self.pred_len,self.seq_len]))
+        # Additional layers
+        self.dropout = nn.Dropout(0.1)  # probability of an element to be zeroed. Default: 0.1
+        self.relu = nn.ReLU()
 
     def forward(self, x):
         # x: [Batch, Input length, Channel]
@@ -98,6 +101,12 @@ class Model(nn.Module):
         else:
             seasonal_output = self.Linear_Seasonal(seasonal_init)
             trend_output = self.Linear_Trend(trend_init)
+
+        # Additional layers and activations
+        seasonal_output = self.relu(seasonal_output)
+        seasonal_output = self.dropout(seasonal_output)
+        trend_output = self.relu(trend_output)
+        trend_output = self.dropout(trend_output)
 
         x = seasonal_output + trend_output
         return x.permute(0,2,1) # to [Batch, Output length, Channel]

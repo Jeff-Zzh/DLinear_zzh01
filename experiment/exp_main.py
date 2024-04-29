@@ -229,7 +229,7 @@ class Exp_Main(Exp_Basic):
         test_data, test_loader = self._get_data(flag='test')
         
         if test:
-            print('loading model')
+            print('loading model, inference')
             self.model.load_state_dict(torch.load(os.path.join('./checkpoints/' + setting, 'checkpoint.pth')))
 
         preds = []
@@ -262,7 +262,7 @@ class Exp_Main(Exp_Basic):
                             else:
                                 outputs = self.model(batch_x, batch_x_mark, dec_inp, batch_y_mark)
                 else:
-                    if 'DLinear' or 'ZLinear' in self.args.model:
+                    if 'DLinear' or 'ZLinear' in self.args.model: # cpu跑DLinear/ZLinear真正走的逻辑
                             outputs = self.model(batch_x)
                     else:
                         if self.args.output_attention:
@@ -286,9 +286,9 @@ class Exp_Main(Exp_Basic):
                 inputx.append(batch_x.detach().cpu().numpy())
                 if i % 20 == 0: # 每20组 batch记录一次
                     input = batch_x.detach().cpu().numpy()
-                    gt = np.concatenate((input[0, :, -1], true[0, :, -1]), axis=0) # ground truth真实值
-                    pd = np.concatenate((input[0, :, -1], pred[0, :, -1]), axis=0) # pred 预测值
-                    visual(gt, pd, os.path.join(folder_path, str(i) + '.pdf'))
+                    ground_truth = np.concatenate((input[0, :, -1], true[0, :, -1]), axis=0) # ground truth真实值
+                    prediction = np.concatenate((input[0, :, -1], pred[0, :, -1]), axis=0) # pred 预测值
+                    visual(ground_truth, prediction, os.path.join(folder_path, str(i) + '.pdf'))
 
         if self.args.test_flop:
             test_params_flop((batch_x.shape[1],batch_x.shape[2]))
@@ -306,11 +306,13 @@ class Exp_Main(Exp_Basic):
         if not os.path.exists(folder_path):
             os.makedirs(folder_path)
 
-        mae, mse, rmse, mape, mspe, rse, corr = metric(preds, trues)
-        print('mse:{}, mae:{}, rse:{}, corr:{}'.format(mse, mae, rse, corr))
+        mae, mse, rmse, mape, mspe, rse, corr = metric(preds, trues) # 计算预测值和真实值之间的上述所有误差
+        print('预测值和真实值之间的误差:mse:{}, mae:{}, rse:{}'.format(mse, mae, rse))
+        print(f'预测值和真实值之间的相关系数\n:corr:{corr}')
         f = open("result.txt", 'a')
         f.write(setting + "  \n")
-        f.write('mse:{}, mae:{}, rse:{}, corr:{}'.format(mse, mae, rse, corr))
+        f.write('预测值和真实值之间的误差:mse:{}, mae:{}, rse:{}'.format(mse, mae, rse))
+        f.write(f'预测值和真实值之间的相关系数\n:corr:{corr}')
         f.write('\n')
         f.write('\n')
         f.close()

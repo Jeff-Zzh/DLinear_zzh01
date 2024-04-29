@@ -47,7 +47,7 @@ def data_provider(args, flag):
     print(flag+' set', len(data_set)) # 打印 train 4880     val 665     test 1422
     data_loader = DataLoader(
         data_set, # 要加载的数据集对
-        batch_size=batch_size, # 默认 32 每个批次中包含的样本数目为32
+        batch_size=batch_size, # 默认 32 每个批次中包含的样本数目为32， 我们传的batch_size为8
         shuffle=shuffle_flag, # 是否在每个 epoch 之前对数据进行洗牌。洗牌可以帮助模型更好地学习数据的分布，提高训练效果。通常在训练过程中会进行洗牌，但在测试过程中则不需要
         num_workers=args.num_workers, # 数据加载器（data loader）中的工作进程数量,用于加载数据
         drop_last=drop_last) # 是否丢弃最后一个批次中不足 batch_size 的样本，通常在训练过程中会设置为 True，而在测试过程中则设置为 False

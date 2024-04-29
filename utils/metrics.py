@@ -1,6 +1,6 @@
 import numpy as np
 '''
-定义了评价回归模型性能的指标函数
+定义了评价回归模型精确度的指标函数
 '''
 
 def RSE(pred, true):
@@ -16,15 +16,16 @@ def RSE(pred, true):
 
 def CORR(pred, true):
     '''
-    Correlation
+    Correlation 皮尔逊相关系数
     相关系数，衡量预测值与真实值之间的线性相关性
+    计算两个数组（预测值和真实值）之间的相关系数。相关系数是衡量两个变量之间线性关系强度的一种统计量，其取值范围在-1到1之间
     :param pred:
     :param true:
     :return:
     '''
-    u = ((true - true.mean(0)) * (pred - pred.mean(0))).sum(0)
-    d = np.sqrt(((true - true.mean(0)) ** 2 * (pred - pred.mean(0)) ** 2).sum(0))
-    d += 1e-12
+    u = ((true - true.mean(0)) * (pred - pred.mean(0))).sum(0) # 真实值和预测值与它们各自的均值的差值的乘积
+    d = np.sqrt(((true - true.mean(0)) ** 2 * (pred - pred.mean(0)) ** 2).sum(0)) # 每个元素平方的差值乘积之和
+    d += 1e-12 # 避免分母为零的情况
     return 0.01*(u / d).mean(-1)
 
 def MAE(pred, true):

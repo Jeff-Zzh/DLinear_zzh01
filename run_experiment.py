@@ -138,7 +138,7 @@ if __name__ == '__main__':
 
             torch.cuda.empty_cache()
 
-    else:  # 推理 inference
+    else:  # 推理 inference, 此时才会加载之前的模型参数检查点checkpoint.pth
         ii = 0
         setting = '{}_{}_{}_ft{}_sl{}_ll{}_pl{}_dm{}_nh{}_el{}_dl{}_df{}_fc{}_eb{}_dt{}_{}_{}'.format(args.model_id,
                                                                                                       args.model,
