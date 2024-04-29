@@ -50,6 +50,24 @@ class series_decomp(nn.Module):
         res = x - moving_mean
         return res, moving_mean # 返回元组
 
+class ResidualBlock(nn.Module):
+    def __init__(self, in_channels, out_channels, kernel_size):
+        super(ResidualBlock, self).__init__()
+        self.conv1 = nn.Conv1d(in_channels, out_channels, kernel_size, padding=(kernel_size - 1) // 2)
+        self.conv2 = nn.Conv1d(out_channels, out_channels, kernel_size, padding=(kernel_size - 1) // 2)
+        self.relu = nn.ReLU()
+        self.dropout = nn.Dropout(0.2)
+
+    def forward(self, x):
+        residual = x
+        out = self.relu(self.conv1(x))
+        out = self.dropout(out)
+        out = self.conv2(out)
+        out += residual  # 添加残差连接
+        out = self.relu(out)
+        out = self.dropout(out)
+        return out
+
 class Model(nn.Module):
     """
     ZLinear：整合移动平均模块和时间序列分解模块，使用线性层 来预测 时间序列的趋势 和 季节性成分
@@ -68,6 +86,9 @@ class Model(nn.Module):
         self.decompsition = series_decomp(kernel_size) # 时间序列分解的移动平均模块的窗口大小
         self.individual = configs.individual # 命令行参数 DLinear: a linear layer for each variate(channel) individually 标志着是否为每个通道（变量）使用单独的线性层
         self.channels = configs.enc_in # 表示输入数据中的通道数
+
+        # self.conv1 = nn.Conv1d(self.channels, 64, kernel_size=3, padding=1)  # 增加卷积层
+        # self.residual_blocks = nn.ModuleList([ResidualBlock(64, 64, kernel_size=3) for _ in range(2)])  # 引入残差块
 
         if self.individual:
             self.Linear_Seasonal = nn.ModuleList()
@@ -93,6 +114,7 @@ class Model(nn.Module):
         # x: [Batch, Input length, Channel]
         seasonal_init, trend_init = self.decompsition(x) # 调用时间序列分解模块得到趋势和季节性成分
         seasonal_init, trend_init = seasonal_init.permute(0,2,1), trend_init.permute(0,2,1)
+
         if self.individual: # 为真，为每个通道分别应用线性层；否则，所有通道共享同一线性层
             seasonal_output = torch.zeros([seasonal_init.size(0),seasonal_init.size(1),self.pred_len],dtype=seasonal_init.dtype).to(seasonal_init.device)
             trend_output = torch.zeros([trend_init.size(0),trend_init.size(1),self.pred_len],dtype=trend_init.dtype).to(trend_init.device)

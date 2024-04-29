@@ -220,17 +220,18 @@ class Exp_Main(Exp_Basic):
 
     def test(self, setting, test=0):
         '''
+        在测试集上进行测试，并返回评估指标，如均方误差（MSE）、平均绝对误差（MAE）、相关系数等
+        可以设置 test 参数为 1，以加载训练好的模型进行测试。
         Args:
             setting: 命令行参数存成的字符串，是模型参数存储路径的一部分
             test: test=1 时才load模型参数
-        在测试集上进行测试，并返回评估指标，如均方误差（MSE）、平均绝对误差（MAE）、相关系数等
-        可以设置 test 参数为 1，以加载训练好的模型进行测试。
+
         '''
-        test_data, test_loader = self._get_data(flag='test')
+        test_data, test_loader = self._get_data(flag='test') # 获取测试数据集
         
         if test:
             print('loading model, inference')
-            self.model.load_state_dict(torch.load(os.path.join('./checkpoints/' + setting, 'checkpoint.pth')))
+            self.model.load_state_dict(torch.load(os.path.join('./checkpoints/' + setting, 'checkpoint.pth')))# 加载训练好的模型参数
 
         preds = []
         trues = []
@@ -240,7 +241,7 @@ class Exp_Main(Exp_Basic):
             os.makedirs(folder_path)
 
         self.model.eval() # 将模型设置为评估模式
-        with torch.no_grad(): # 上下文管理器，用于在其内部禁用梯度跟踪，因为在inference阶段不需要计算梯度，只需要前向传播计算输出结果
+        with torch.no_grad(): # 上下文管理器，用于在其内部禁用梯度跟踪，因为在测试阶段（inference阶段）不需要计算梯度，只需要前向传播计算输出结果
             for i, (batch_x, batch_y, batch_x_mark, batch_y_mark) in enumerate(test_loader):
                 batch_x = batch_x.float().to(self.device)
                 batch_y = batch_y.float().to(self.device)
@@ -263,7 +264,7 @@ class Exp_Main(Exp_Basic):
                                 outputs = self.model(batch_x, batch_x_mark, dec_inp, batch_y_mark)
                 else:
                     if 'DLinear' or 'ZLinear' in self.args.model: # cpu跑DLinear/ZLinear真正走的逻辑
-                            outputs = self.model(batch_x)
+                            outputs = self.model(batch_x) # cpu跑DLinear/ZLinear真正走的逻辑 使用模型进行前向传播，得到预测结果
                     else:
                         if self.args.output_attention:
                             outputs = self.model(batch_x, batch_x_mark, dec_inp, batch_y_mark)[0]
@@ -271,22 +272,27 @@ class Exp_Main(Exp_Basic):
                         else:
                             outputs = self.model(batch_x, batch_x_mark, dec_inp, batch_y_mark)
 
-                f_dim = -1 if self.args.features == 'MS' else 0
+                f_dim = -1 if self.args.features == 'MS' else 0 # 选择第1个或倒数第1个 特征维度
                 # print(outputs.shape,batch_y.shape)
-                outputs = outputs[:, -self.args.pred_len:, f_dim:]
-                batch_y = batch_y[:, -self.args.pred_len:, f_dim:].to(self.device)
-                outputs = outputs.detach().cpu().numpy()
-                batch_y = batch_y.detach().cpu().numpy()
 
-                pred = outputs  # outputs.detach().cpu().numpy()  # .squeeze()
-                true = batch_y  # batch_y.detach().cpu().numpy()  # .squeeze()
+                # 将预测结果和真实值都截取最后 args.pred_len 个时间步
+                outputs = outputs[:, -self.args.pred_len:, f_dim:]  # 仅保留预测序列的最后 args.pred_len 个时间步的预测结果
+                batch_y = batch_y[:, -self.args.pred_len:, f_dim:].to(self.device)  # 仅保留真实序列的最后 args.pred_len 个时间步的真实值
+                outputs = outputs.detach().cpu().numpy()  # 将预测结果从 GPU 上取回到 CPU，并转换为 numpy 数组
+                batch_y = batch_y.detach().cpu().numpy()  # 将真实值从 GPU 上取回到 CPU，并转换为 numpy 数组
 
-                preds.append(pred)
-                trues.append(true)
-                inputx.append(batch_x.detach().cpu().numpy())
-                if i % 20 == 0: # 每20组 batch记录一次
-                    input = batch_x.detach().cpu().numpy()
+                pred = outputs  # outputs.detach().cpu().numpy()  # .squeeze() 预测值
+                true = batch_y  # batch_y.detach().cpu().numpy()  # .squeeze() 真实值
+
+                preds.append(pred) # 将当前 batch 的预测值添加到 preds 列表中
+                trues.append(true) # 将当前 batch 的真实值添加到 trues 列表中
+                inputx.append(batch_x.detach().cpu().numpy()) # 将当前 batch 的输入数据添加到 inputx 列表中
+
+                if i % 20 == 0: # 每处理 20 个 batch 记录一次结果
+                    input = batch_x.detach().cpu().numpy() # 当前 batch 的输入数据转换为 numpy 数组
+                    # 将当前 batch 的真实值与输入序列的最后一个时间步的值连接起来，作为 ground truth
                     ground_truth = np.concatenate((input[0, :, -1], true[0, :, -1]), axis=0) # ground truth真实值
+                    # 将当前 batch 的预测值与输入序列的最后一个时间步的值连接起来，作为预测结果
                     prediction = np.concatenate((input[0, :, -1], pred[0, :, -1]), axis=0) # pred 预测值
                     visual(ground_truth, prediction, os.path.join(folder_path, str(i) + '.pdf'))
 
@@ -309,13 +315,11 @@ class Exp_Main(Exp_Basic):
         mae, mse, rmse, mape, mspe, rse, corr = metric(preds, trues) # 计算预测值和真实值之间的上述所有误差
         print('预测值和真实值之间的误差:mse:{}, mae:{}, rse:{}'.format(mse, mae, rse))
         print(f'预测值和真实值之间的相关系数\n:corr:{corr}')
-        f = open("result.txt", 'a')
-        f.write(setting + "  \n")
-        f.write('预测值和真实值之间的误差:mse:{}, mae:{}, rse:{}'.format(mse, mae, rse))
-        f.write(f'预测值和真实值之间的相关系数\n:corr:{corr}')
-        f.write('\n')
-        f.write('\n')
-        f.close()
+        with open("result.txt", 'a') as f:
+            f.write(setting + "  \n")
+            f.write('预测值和真实值之间的误差:mse:{}, mae:{}, rse:{}'.format(mse, mae, rse))
+            f.write(f'预测值和真实值之间的相关系数\n:corr:{corr}')
+            f.write('\n\n')
 
         # np.save(folder_path + 'metrics.npy', np.array([mae, mse, rmse, mape, mspe,rse, corr]))
         np.save(folder_path + 'pred.npy', preds) # 存储预测数据

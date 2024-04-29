@@ -4,73 +4,74 @@ train set 4880
 val set 665
 test set 1422
 	iters: 100, epoch: 1 | loss: 0.2392815
-	speed: 0.1539s/iter; estimate training left time: 923.3099s
+	speed: 0.1653s/iter; estimate training left time: 992.2079s
 	iters: 200, epoch: 1 | loss: 0.1053159
-	speed: 0.0017s/iter; estimate training left time: 9.7599s
+	speed: 0.0018s/iter; estimate training left time: 10.7348s
 	iters: 300, epoch: 1 | loss: 0.0759244
-	speed: 0.0018s/iter; estimate training left time: 10.2270s
+	speed: 0.0018s/iter; estimate training left time: 10.6845s
 	iters: 400, epoch: 1 | loss: 0.1243029
-	speed: 0.0017s/iter; estimate training left time: 9.4213s
+	speed: 0.0019s/iter; estimate training left time: 10.7108s
 	iters: 500, epoch: 1 | loss: 0.1390015
-	speed: 0.0016s/iter; estimate training left time: 9.2228s
+	speed: 0.0018s/iter; estimate training left time: 10.0427s
 	iters: 600, epoch: 1 | loss: 0.2665116
-	speed: 0.0017s/iter; estimate training left time: 9.1664s
-Epoch: 1 cost time: 16.670860290527344
+	speed: 0.0018s/iter; estimate training left time: 9.9767s
+Epoch: 1 cost time: 17.913798093795776
 Epoch: 1, Steps: 610 | Train Loss: 0.1564318 Vali Loss: 0.1359236 Test Loss: 0.0964929
 Validation Set loss decreased (inf --> 0.135924).              Saving model checkpoint.pth...
 Updating learning rate to 0.0005
 	iters: 100, epoch: 2 | loss: 0.1187701
-	speed: 0.4857s/iter; estimate training left time: 2618.6681s
+	speed: 0.4829s/iter; estimate training left time: 2603.3366s
 	iters: 200, epoch: 2 | loss: 0.0927270
-	speed: 0.0019s/iter; estimate training left time: 10.3002s
+	speed: 0.0018s/iter; estimate training left time: 9.5617s
 	iters: 300, epoch: 2 | loss: 0.1323768
-	speed: 0.0019s/iter; estimate training left time: 9.9979s
+	speed: 0.0018s/iter; estimate training left time: 9.2231s
 	iters: 400, epoch: 2 | loss: 0.1139473
-	speed: 0.0018s/iter; estimate training left time: 9.3798s
+	speed: 0.0020s/iter; estimate training left time: 9.9923s
 	iters: 500, epoch: 2 | loss: 0.0852855
-	speed: 0.0016s/iter; estimate training left time: 8.1049s
+	speed: 0.0020s/iter; estimate training left time: 10.0071s
 	iters: 600, epoch: 2 | loss: 0.1650030
-	speed: 0.0017s/iter; estimate training left time: 8.2822s
-Epoch: 2 cost time: 17.517492532730103
+	speed: 0.0020s/iter; estimate training left time: 9.9961s
+Epoch: 2 cost time: 16.993374824523926
 Epoch: 2, Steps: 610 | Train Loss: 0.1327538 Vali Loss: 0.4570989 Test Loss: 0.2249011
 EarlyStopping counter: 1 out of 3
 Updating learning rate to 0.00025
 	iters: 100, epoch: 3 | loss: 0.0763714
-	speed: 0.5010s/iter; estimate training left time: 2395.1396s
+	speed: 0.4808s/iter; estimate training left time: 2298.9227s
 	iters: 200, epoch: 3 | loss: 0.1074290
-	speed: 0.0019s/iter; estimate training left time: 8.6716s
+	speed: 0.0019s/iter; estimate training left time: 9.0866s
 	iters: 300, epoch: 3 | loss: 0.1187491
-	speed: 0.0017s/iter; estimate training left time: 7.9127s
+	speed: 0.0018s/iter; estimate training left time: 8.4452s
 	iters: 400, epoch: 3 | loss: 0.2061634
-	speed: 0.0019s/iter; estimate training left time: 8.7142s
+	speed: 0.0018s/iter; estimate training left time: 8.2642s
 	iters: 500, epoch: 3 | loss: 0.0801372
-	speed: 0.0021s/iter; estimate training left time: 9.0686s
+	speed: 0.0018s/iter; estimate training left time: 8.0810s
 	iters: 600, epoch: 3 | loss: 0.0840179
-	speed: 0.0022s/iter; estimate training left time: 9.3344s
-Epoch: 3 cost time: 17.59774684906006
+	speed: 0.0018s/iter; estimate training left time: 7.8259s
+Epoch: 3 cost time: 17.081924438476562
 Epoch: 3, Steps: 610 | Train Loss: 0.1276816 Vali Loss: 0.3159181 Test Loss: 0.1508290
 EarlyStopping counter: 2 out of 3
 Updating learning rate to 0.000125
 	iters: 100, epoch: 4 | loss: 0.1906338
-	speed: 0.4951s/iter; estimate training left time: 2064.8982s
+	speed: 0.5159s/iter; estimate training left time: 2151.6961s
 	iters: 200, epoch: 4 | loss: 0.1218559
-	speed: 0.0017s/iter; estimate training left time: 6.7490s
+	speed: 0.0018s/iter; estimate training left time: 7.3310s
 	iters: 300, epoch: 4 | loss: 0.1180647
-	speed: 0.0017s/iter; estimate training left time: 6.8510s
+	speed: 0.0018s/iter; estimate training left time: 7.2814s
 	iters: 400, epoch: 4 | loss: 0.0877587
-	speed: 0.0019s/iter; estimate training left time: 7.3544s
+	speed: 0.0018s/iter; estimate training left time: 6.9562s
 	iters: 500, epoch: 4 | loss: 0.0670216
-	speed: 0.0017s/iter; estimate training left time: 6.5172s
+	speed: 0.0018s/iter; estimate training left time: 6.6972s
 	iters: 600, epoch: 4 | loss: 0.2168778
-	speed: 0.0018s/iter; estimate training left time: 6.6853s
-Epoch: 4 cost time: 16.812159061431885
+	speed: 0.0019s/iter; estimate training left time: 6.9318s
+Epoch: 4 cost time: 18.6945960521698
 Epoch: 4, Steps: 610 | Train Loss: 0.1250125 Vali Loss: 0.2659903 Test Loss: 0.1187424
 EarlyStopping counter: 3 out of 3
 Early stopping
 >>>>>>>testing setting: Exchange_336_96_ZLinear_custom_ftM_sl336_ll48_pl96_dm512_nh8_el2_dl1_df2048_fc1_ebtimeF_dtTrue_Exp_0<<<<<<<<<<<<
 test set 1422
 预测值和真实值之间的误差:mse:0.09649288654327393, mae:0.2173929363489151, rse:0.23629674315452576
-预测值和真实值之间的相关系数:corr:[0.25661948 0.2563557  0.25613433 0.25596264 0.25584128 0.25549242
+预测值和真实值之间的相关系数
+:corr:[0.25661948 0.2563557  0.25613433 0.25596264 0.25584128 0.25549242
  0.25537047 0.2550778  0.25481045 0.254598   0.25447688 0.25447848
  0.254629   0.2548229  0.25473002 0.25481772 0.2548338  0.2549345
  0.25484082 0.25481176 0.25476044 0.25470552 0.25468007 0.25474384

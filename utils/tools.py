@@ -138,12 +138,12 @@ def visual(true, preds=None, name='./pic/test.pdf'):
     :param name: 图片保存名称, 这里指定了一个默认路径，但是我们一般会传入要真实存放的路径
     :return:
     '''
-    plt.figure()
-    plt.plot(true, label='GroundTruth', linewidth=2) # 真实数据
+    plt.figure() # 创建一个新的图形
+    plt.plot(true, label='GroundTruth', linewidth=2) # 绘制真实数据的折线图，设置线条宽度为2
     if preds is not None:
-        plt.plot(preds, label='Prediction', linewidth=2) # 预测数据
+        plt.plot(preds, label='Prediction', linewidth=2)  # 绘制预测数据的折线图，设置线条宽度为2
     plt.legend() # 添加图例标签
-    plt.savefig(name, bbox_inches='tight') # 将图片保存为PDF格式
+    plt.savefig(name, bbox_inches='tight') # 将绘制的图形保存为 PDF 格式的图片，保存路径由参数 name 指定，使用紧凑布局
 
 def test_params_flop(model,x_shape):
     '''

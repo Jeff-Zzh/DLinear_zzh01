@@ -34,10 +34,10 @@ def run_command(start_script, data_set, data_set_name, seq_len, pred_len, model,
 
 if __name__ == '__main__':
     # 运行命令并输出日志
-    os.system(run_command(start_script='run_experiment.py', data_set='exchange_rate.csv', data_set_name='Exchange',
-                          seq_len=336, pred_len=96,
-                          model='DLinear', batch_size=8,
-                          learning_rate=0.0005))
+    # os.system(run_command(start_script='run_experiment.py', data_set='exchange_rate.csv', data_set_name='Exchange',
+    #                       seq_len=336, pred_len=96,
+    #                       model='DLinear', batch_size=8,
+    #                       learning_rate=0.0005))
     # os.system(run_command(seq_len, 192, 8, 0.0005))
     # os.system(run_command(seq_len, 336, 32, 0.0005))
     # os.system(run_command(seq_len, 720, 32, 0.005))
